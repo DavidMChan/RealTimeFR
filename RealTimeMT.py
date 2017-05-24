@@ -14,7 +14,7 @@ t_fpsLock = threading.Lock()
 
 
 # Define the shared variables
-t_last_preds = np.asarray([1.0,1.0,1.0,1.0,1.0,1.0,1.0]).astype(float)
+t_last_preds = np.asarray([1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]).astype(float)
 t_last_prediction = None
 t_pred_avail = False
 t_frame_avail = False
@@ -145,13 +145,15 @@ class displayThread (threading.Thread):
                     if faces is not None:
                         for (x, y, w, h) in faces:
                             # Draw the prediction quantifiers in lower left
-                            cv2.putText(frame,"Anger", (10,F_HEIGHT-10), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Disgust", (10,F_HEIGHT-20), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Fear", (10,F_HEIGHT-30), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Happiness", (10,F_HEIGHT-40), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Neutral", (10,F_HEIGHT-50), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Sadness", (10,F_HEIGHT-60), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Surprise", (10,F_HEIGHT-70), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Neutral", (10,F_HEIGHT-10), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Happiness", (10,F_HEIGHT-20), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Sadness", (10,F_HEIGHT-30), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Surprise", (10,F_HEIGHT-40), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Fear", (10,F_HEIGHT-50), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Disgust", (10,F_HEIGHT-60), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Anger", (10,F_HEIGHT-70), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Contempt", (10,F_HEIGHT-80), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+
 
                             BASE_WIDTH = 100
                             BASE_EXT = 150
@@ -163,6 +165,8 @@ class displayThread (threading.Thread):
                             cv2.line(frame,(BASE_WIDTH, F_HEIGHT-55), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[4]), F_HEIGHT-55), (0,0,255) if np.argmax(t_last_preds) == 4 else (0, 255, 0), 2, 8, 0)
                             cv2.line(frame,(BASE_WIDTH, F_HEIGHT-65), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[5]), F_HEIGHT-65), (0,0,255) if np.argmax(t_last_preds) == 5 else (0, 255, 0), 2, 8, 0)
                             cv2.line(frame,(BASE_WIDTH, F_HEIGHT-75), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[6]), F_HEIGHT-75), (0,0,255) if np.argmax(t_last_preds) == 6 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-85), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[7]), F_HEIGHT-85), (0,0,255) if np.argmax(t_last_preds) == 7 else (0, 255, 0), 2, 8, 0)
+
 
                             EXPANSION_CONSTANT=50
                             
@@ -201,7 +205,7 @@ class predictionThread(threading.Thread):
         import tflearn
         import RealTimeMTModel
 
-        model = RealTimeMTModel.get_model('model_resnet_cifar10-37000')
+        model = RealTimeMTModel.get_model('model_resnet_cifar10-64000')
 
         NUM_SMOOTHING_FRAMES = 10
 
@@ -214,7 +218,8 @@ class predictionThread(threading.Thread):
 
             if recent_frame is not None and not len(recent_frame) == 0:
                 patch = recent_frame[0]
-                pred = model.predict(np.expand_dims(patch.astype('float32'),axis=0))
+                pred = model.predict(np.expand_dims(np.divide(patch.astype('float32'),255.0),axis=0))
+                
                 #pred = [[random.random() for _ in range(7)]]
                 #pred /= np.max(np.abs(pred),axis=0)
 

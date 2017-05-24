@@ -4,13 +4,14 @@ import numpy as np
 def get_emotion(ival):
 	emotion = np.argmax(ival)
 	switcher = {
-		0: ("Anger",(0,0,255)),
-		1: ("Disgust",(0,255,0)),
-		2: ("Fear",(255,0,255)),
-		3: ("Happiness",(0,255,255)),
-		4: ("Neutral",(0,0,0)),
-		5: ("Sadness",(255,0,0)),
-		6: ("Surprise",(255,255,0))
+                0: ("Neutral",(0,0,0)),
+                1: ("Happiness",(0,255,255)),
+                2: ("Sadness",(255,0,0)),
+                3: ("Surprise",(255,255,0)),
+                4: ("Fear",(255,0,255)),
+                5: ("Disgust",(0,255,0)),
+		6: ("Anger",(0,0,255)),
+                7: ("Contempt",(255,255,255))
 	}
 	return switcher.get(emotion, ("N/A",(0,0,0)))
 
@@ -22,7 +23,7 @@ def get_model(model_name):
     # Real-time data preprocessing
     print("Doing preprocessing...")
     img_prep = tflearn.ImagePreprocessing()
-    img_prep.add_featurewise_zero_center(per_channel=True, mean=[83.11,86.75,110.358])
+    img_prep.add_featurewise_zero_center(per_channel=True, mean=[0.573364,0.44924123,0.39455055])
 
     # Real-time data augmentation
     print("Building augmentation...")
@@ -48,7 +49,7 @@ def get_model(model_name):
     net = tflearn.batch_normalization(net)
     net = tflearn.activation(net, 'relu')
     net = tflearn.global_avg_pool(net)
-    net = tflearn.fully_connected(net, 7, activation='softmax')
+    net = tflearn.fully_connected(net, 8, activation='softmax')
     opt = tflearn.Momentum(0.1, lr_decay=0.1, decay_step=32000, staircase=True)
     net = tflearn.regression(net, optimizer=opt,
                              loss='categorical_crossentropy')
