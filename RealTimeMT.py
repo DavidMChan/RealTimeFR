@@ -139,31 +139,33 @@ class displayThread (threading.Thread):
                 
                 
                 if t_pred_avail:
-                    # Draw the prediction quantifiers in lower left
-                    cv2.putText(frame,"Anger", (10,F_HEIGHT-10), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                    cv2.putText(frame,"Disgust", (10,F_HEIGHT-20), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                    cv2.putText(frame,"Fear", (10,F_HEIGHT-30), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                    cv2.putText(frame,"Happiness", (10,F_HEIGHT-40), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                    cv2.putText(frame,"Neutral", (10,F_HEIGHT-50), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                    cv2.putText(frame,"Sadness", (10,F_HEIGHT-60), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                    cv2.putText(frame,"Surprise", (10,F_HEIGHT-70), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-
-                    BASE_WIDTH = 100
-                    BASE_EXT = 150
+                    
 
                     t_resultLock.acquire()
-                    cv2.line(frame,(BASE_WIDTH, F_HEIGHT-15), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[0]), F_HEIGHT-15), (0,0,255) if np.argmax(t_last_preds) == 0 else (0, 255, 0), 2, 8, 0)
-                    cv2.line(frame,(BASE_WIDTH, F_HEIGHT-25), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[1]), F_HEIGHT-25), (0,0,255) if np.argmax(t_last_preds) == 1 else (0, 255, 0), 2, 8, 0)
-                    cv2.line(frame,(BASE_WIDTH, F_HEIGHT-35), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[2]), F_HEIGHT-35), (0,0,255) if np.argmax(t_last_preds) == 2 else (0, 255, 0), 2, 8, 0)
-                    cv2.line(frame,(BASE_WIDTH, F_HEIGHT-45), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[3]), F_HEIGHT-45), (0,0,255) if np.argmax(t_last_preds) == 3 else (0, 255, 0), 2, 8, 0)
-                    cv2.line(frame,(BASE_WIDTH, F_HEIGHT-55), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[4]), F_HEIGHT-55), (0,0,255) if np.argmax(t_last_preds) == 4 else (0, 255, 0), 2, 8, 0)
-                    cv2.line(frame,(BASE_WIDTH, F_HEIGHT-65), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[5]), F_HEIGHT-65), (0,0,255) if np.argmax(t_last_preds) == 5 else (0, 255, 0), 2, 8, 0)
-                    cv2.line(frame,(BASE_WIDTH, F_HEIGHT-75), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[6]), F_HEIGHT-75), (0,0,255) if np.argmax(t_last_preds) == 6 else (0, 255, 0), 2, 8, 0)
-
-                    EXPANSION_CONSTANT=50
-                    
                     if faces is not None:
                         for (x, y, w, h) in faces:
+                            # Draw the prediction quantifiers in lower left
+                            cv2.putText(frame,"Anger", (10,F_HEIGHT-10), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Disgust", (10,F_HEIGHT-20), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Fear", (10,F_HEIGHT-30), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Happiness", (10,F_HEIGHT-40), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Neutral", (10,F_HEIGHT-50), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Sadness", (10,F_HEIGHT-60), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+                            cv2.putText(frame,"Surprise", (10,F_HEIGHT-70), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
+
+                            BASE_WIDTH = 100
+                            BASE_EXT = 150
+                            
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-15), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[0]), F_HEIGHT-15), (0,0,255) if np.argmax(t_last_preds) == 0 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-25), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[1]), F_HEIGHT-25), (0,0,255) if np.argmax(t_last_preds) == 1 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-35), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[2]), F_HEIGHT-35), (0,0,255) if np.argmax(t_last_preds) == 2 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-45), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[3]), F_HEIGHT-45), (0,0,255) if np.argmax(t_last_preds) == 3 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-55), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[4]), F_HEIGHT-55), (0,0,255) if np.argmax(t_last_preds) == 4 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-65), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[5]), F_HEIGHT-65), (0,0,255) if np.argmax(t_last_preds) == 5 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-75), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[6]), F_HEIGHT-75), (0,0,255) if np.argmax(t_last_preds) == 6 else (0, 255, 0), 2, 8, 0)
+
+                            EXPANSION_CONSTANT=50
+                            
                             x = round_custom(x)
                             y = round_custom(y)
                             w = round_custom(w)
