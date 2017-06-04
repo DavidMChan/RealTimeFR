@@ -29,7 +29,7 @@ t_fwidth = 0
 
 # Custom rounding
 def round_custom(x, base=20):
-    return int(base * round(float(x)/base))
+    return x#int(base * round(float(x)/base))
 
 # Define the capture class
 class captureThread (threading.Thread):
@@ -72,7 +72,7 @@ class captureThread (threading.Thread):
 
                 # Extract the faces from the frame
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                faces = face_cascade.detectMultiScale(gray, 1.3, 5, minSize=(32,32))
+                faces = face_cascade.detectMultiScale(gray, 1.2, 5, minSize=(32,32),flags=cv2.CASCADE_SCALE_IMAGE)
                 last_frame = []
 
                 # Write displayable information to the global vars
@@ -127,46 +127,25 @@ class displayThread (threading.Thread):
             F_WIDTH = t_fwidth
 
             if frame is not None:
-                t_fpsLock.acquire()
-                cv2.putText(frame,str(round(1/t_dfps,2)), (5,30), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0), 2)
-                cv2.putText(frame,str(round(1/t_cfps,2)), (5,60), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0), 2)
+                #t_fpsLock.acquire()
+                #cv2.putText(frame,str(round(1/t_dfps,2)), (5,30), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0), 2)
+                #cv2.putText(frame,str(round(1/t_cfps,2)), (5,60), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0), 2)
                 if t_pfps == -1:
-                    cv2.putText(frame,'Loading Predictor...', (5,90), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 2)
-                else:
-                    cv2.putText(frame,str(round(1/t_pfps,2)), (5,90), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0), 2)
-                t_fpsLock.release()
+                    cv2.putText(frame,'Loading Predictor...', (5,30), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,255), 2)
+                #elif t_pfps > 100:
+                #    pass
+                #else:
+                #    cv2.putText(frame,str(round(1/t_pfps,2)), (5,90), cv2.FONT_HERSHEY_PLAIN, 2, (0,255,0), 2)
+                #t_fpsLock.release()
 
-                
-                
+                # Draw the prediction quantifiers in upper right
+                d_face = False
                 if t_pred_avail:
                     
-
                     t_resultLock.acquire()
                     if faces is not None:
                         for (x, y, w, h) in faces:
-                            # Draw the prediction quantifiers in lower left
-                            cv2.putText(frame,"Neutral", (10,F_HEIGHT-10), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Happiness", (10,F_HEIGHT-20), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Sadness", (10,F_HEIGHT-30), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Surprise", (10,F_HEIGHT-40), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Fear", (10,F_HEIGHT-50), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Disgust", (10,F_HEIGHT-60), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Anger", (10,F_HEIGHT-70), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-                            cv2.putText(frame,"Contempt", (10,F_HEIGHT-80), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0), 1)
-
-
-                            BASE_WIDTH = 100
-                            BASE_EXT = 150
-                            
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-15), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[0]), F_HEIGHT-15), (0,0,255) if np.argmax(t_last_preds) == 0 else (0, 255, 0), 2, 8, 0)
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-25), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[1]), F_HEIGHT-25), (0,0,255) if np.argmax(t_last_preds) == 1 else (0, 255, 0), 2, 8, 0)
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-35), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[2]), F_HEIGHT-35), (0,0,255) if np.argmax(t_last_preds) == 2 else (0, 255, 0), 2, 8, 0)
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-45), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[3]), F_HEIGHT-45), (0,0,255) if np.argmax(t_last_preds) == 3 else (0, 255, 0), 2, 8, 0)
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-55), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[4]), F_HEIGHT-55), (0,0,255) if np.argmax(t_last_preds) == 4 else (0, 255, 0), 2, 8, 0)
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-65), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[5]), F_HEIGHT-65), (0,0,255) if np.argmax(t_last_preds) == 5 else (0, 255, 0), 2, 8, 0)
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-75), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[6]), F_HEIGHT-75), (0,0,255) if np.argmax(t_last_preds) == 6 else (0, 255, 0), 2, 8, 0)
-                            cv2.line(frame,(BASE_WIDTH, F_HEIGHT-85), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[7]), F_HEIGHT-85), (0,0,255) if np.argmax(t_last_preds) == 7 else (0, 255, 0), 2, 8, 0)
-
+                            d_face = True
 
                             EXPANSION_CONSTANT=50
                             
@@ -174,11 +153,57 @@ class displayThread (threading.Thread):
                             y = round_custom(y)
                             w = round_custom(w)
                             h = round_custom(h)
-                            cv2.putText(frame,t_last_prediction[0], (max(0,x-EXPANSION_CONSTANT+20), max(0, y-EXPANSION_CONSTANT+20)), cv2.FONT_HERSHEY_PLAIN, 1, t_last_prediction[1], 1)
-                            cv2.rectangle(frame,(max(0,x-EXPANSION_CONSTANT),max(0,y-EXPANSION_CONSTANT)), (min(x+w+EXPANSION_CONSTANT, F_WIDTH),min(y+h+EXPANSION_CONSTANT, F_HEIGHT)), t_last_prediction[1],2)
+                            cv2.putText(frame,t_last_prediction[0],
+                                        (max(0,x-EXPANSION_CONSTANT+30),
+                                         max(0, y-EXPANSION_CONSTANT+30)),
+                                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 1,
+                                         t_last_prediction[1], 2
+                                        )
+                            cv2.rectangle(frame,(max(0,x-EXPANSION_CONSTANT),max(0,y-EXPANSION_CONSTANT)),
+                                                (min(x+w+EXPANSION_CONSTANT, F_WIDTH),
+                                                 min(y+h+EXPANSION_CONSTANT, F_HEIGHT)),
+                                                 t_last_prediction[1], 3
+                                          )
+                            
+                            overlay = frame.copy()
+                            overlay_alpha = 0.8
+                            cv2.rectangle(overlay, (F_WIDTH-(260 if d_face else 100),0), (F_WIDTH, 125), (0,0,0), -1)
+                            cv2.addWeighted(overlay, overlay_alpha, frame, 1-overlay_alpha, 0, frame)
+
+                            #Draw the prediction bars
+                            BASE_WIDTH = F_WIDTH - 100
+                            BASE_EXT = -150
+                            
+                            cv2.line(frame,(BASE_WIDTH, 115), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[7]), 115), (0,0,255) if np.argmax(t_last_preds) == 7 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, 100), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[6]), 100), (0,0,255) if np.argmax(t_last_preds) == 6 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, 85), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[5]), 85), (0,0,255) if np.argmax(t_last_preds) == 5 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, 70), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[4]), 70), (0,0,255) if np.argmax(t_last_preds) == 4 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, 55), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[3]), 55), (0,0,255) if np.argmax(t_last_preds) == 3 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, 40), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[2]), 40), (0,0,255) if np.argmax(t_last_preds) == 2 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, 25), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[1]), 25), (0,0,255) if np.argmax(t_last_preds) == 1 else (0, 255, 0), 2, 8, 0)
+                            cv2.line(frame,(BASE_WIDTH, 10), (int(BASE_WIDTH +  BASE_EXT*t_last_preds[0]), 10), (0,0,255) if np.argmax(t_last_preds) == 0 else (0, 255, 0), 2, 8, 0)
+
+
                             break
                     t_resultLock.release()
-                    
+
+                if not d_face:
+                    overlay = frame.copy()
+                    overlay_alpha = 0.8
+                    cv2.rectangle(overlay, (F_WIDTH-(260 if d_face else 100),0), (F_WIDTH, 125), (0,0,0), -1)
+                    cv2.addWeighted(overlay, overlay_alpha, frame, 1-overlay_alpha, 0, frame)
+
+                cv2.putText(frame,"Neutral",   (F_WIDTH - 90,15), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (255,255,255), 1)
+                cv2.putText(frame,"Happiness", (F_WIDTH - 90,30), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (0,255,255), 1)
+                cv2.putText(frame,"Sadness",   (F_WIDTH - 90,45), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (255,144,30), 1)
+                cv2.putText(frame,"Surprise",  (F_WIDTH - 90,60), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (255,255,0), 1)
+                cv2.putText(frame,"Fear",      (F_WIDTH - 90,75), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (255,0,255), 1)
+                cv2.putText(frame,"Disgust",   (F_WIDTH - 90,90), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (0,255,0), 1)
+                cv2.putText(frame,"Anger",     (F_WIDTH - 90,105), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (0,0,255), 1)
+                cv2.putText(frame,"Contempt",  (F_WIDTH - 90,120), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.6, (0,153,255), 1)
+
+                
+                
                 
                 cv2.imshow('RealtimeFR', frame)
 
@@ -220,7 +245,7 @@ class predictionThread(threading.Thread):
                 patch = recent_frame[0]
                 pred = model.predict(np.expand_dims(np.divide(patch.astype('float32'),255.0),axis=0))
                 
-                #pred = [[random.random() for _ in range(7)]]
+                #pred = [[random.random() for _ in range(8)]]
                 #pred /= np.max(np.abs(pred),axis=0)
 
                 # Update prediction smoothing

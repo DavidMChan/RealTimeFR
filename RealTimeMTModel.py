@@ -4,14 +4,14 @@ import numpy as np
 def get_emotion(ival):
 	emotion = np.argmax(ival)
 	switcher = {
-                0: ("Neutral",(0,0,0)),
+                0: ("Neutral",(255,255,255)),
                 1: ("Happiness",(0,255,255)),
-                2: ("Sadness",(255,0,0)),
+                2: ("Sadness",(255,144,30)),
                 3: ("Surprise",(255,255,0)),
                 4: ("Fear",(255,0,255)),
                 5: ("Disgust",(0,255,0)),
 		6: ("Anger",(0,0,255)),
-                7: ("Contempt",(255,255,255))
+                7: ("Contempt",(0,153,255))
 	}
 	return switcher.get(emotion, ("N/A",(0,0,0)))
 
